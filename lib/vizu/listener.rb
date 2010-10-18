@@ -14,17 +14,7 @@ class Listener
     :mbusahosw12 => [7015, 9015]
   }
 
-  NETSTAR_SERVERS.each_key do |server|
-    NETSTAR_SERVERS[server].each do |port|
-      puts "connecting to server: #{server.to_s}, and port: #{port}"
-      # EM.connect(server, port) do |conn|
-      #   conn.extend EM::P::LineText2
-      #   def conn.receive_line(line)
-      #     process(line)
-      #   end
-      # end
-    end
-  end
+
 
   def process(line)
     channel(line) << Processor.digest(line)
@@ -33,6 +23,18 @@ class Listener
   # This part of the example is more fake, but imagine sleep was in fact a 
   # long running calculation to achieve the value.
   def self.start_all
+    NETSTAR_SERVERS.each_key do |server|
+      NETSTAR_SERVERS[server].each do |port|
+        puts "connecting to server: #{server.to_s}, and port: #{port}"
+        # EM.connect(server, port) do |conn|
+        #   conn.extend EM::P::LineText2
+        #   def conn.receive_line(line)
+        #     process(line)
+        #   end
+        # end
+      end
+    end
+    
     200.times do
       EM.defer lambda { v = sleep(rand * 2); Channels::Accessibility << ["A", Time.now, v]}
       EM.defer lambda { v = sleep(rand * 2); Channels::Portal        << ["P", Time.now, v] }
