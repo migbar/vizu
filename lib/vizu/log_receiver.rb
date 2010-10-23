@@ -15,12 +15,12 @@ class LogReceiver < EM::Connection
   end
   
   def broadcast(line)
-    v = sleep(rand * 12) #simulate an expensive process function ...
-    get_channel(line) << process(line) #channel is determined by the line content
+    # v = sleep(rand * 12) #simulate an expensive process function ...
+    get_channel(line).push process(line) #channel is determined by the line content
   end
   
   def process(line)
-    line[3..line.length-1].upcase
+    line[3..line.length-1]
   end
   
   def get_channel(line)

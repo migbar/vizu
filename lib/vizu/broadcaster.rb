@@ -15,11 +15,13 @@ class Broadcaster < EM::Connection
   end
   
   def post_init
-    @sid = channel.subscribe { |m| send_data "#{process m}\n" }
+    #find out something about the incoming client, subscribe him to the channel he wants
+    @sid = channel.subscribe { |line| send_data "#{process line}\n" }
   end
   
-  def process(msg)
-    msg.upcase
+  def process(line)
+    GourceProcessor.process(line)
+    # msg.upcase
   end
 
   def unbind
