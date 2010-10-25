@@ -24,6 +24,8 @@ class LogReceiver < EM::Connection
   end
   
   def get_channel(line)
+    rpc = line.split("\t").to_a[7].strip.split(" ")[1] 
+    puts "rpc is #{rpc}"
     Channels::Accessibility  
   end
   
