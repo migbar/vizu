@@ -9,7 +9,7 @@ class WebSocketServer
         @channels.each do |channel|
            sid = channel.subscribe do |line| 
             if (processed = process(line))
-              puts "pushing #{processed}"
+              # puts "pushing #{processed}"
               ws.send(processed)
             end
           end

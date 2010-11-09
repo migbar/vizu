@@ -11,7 +11,8 @@ class LogReceiver < EM::Connection
   end
   
   def receive_line(line)
-    EM.defer lambda { broadcast line }
+    # EM.defer lambda { broadcast line }
+    broadcast line
   end
   
   def broadcast(line)
@@ -19,13 +20,13 @@ class LogReceiver < EM::Connection
     get_channel(line).push process(line) #channel is determined by the line content
   end
   
-  def process(line)
+  def process(line)      
+    puts "processing ... #{line}"
     line[3..line.length-1]
   end
   
   def get_channel(line)
-    rpc = line.split("\t").to_a[7].strip.split(" ")[1] 
-    puts "rpc is #{rpc}"
+    # rpc = line.split("\t").to_a[7].strip.split(" ")[1] 
     Channels::Accessibility  
   end
   
