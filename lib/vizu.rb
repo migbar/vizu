@@ -14,10 +14,14 @@ require 'vizu/log_receiver'
 require 'vizu/broadcasters/accessibility'
 require 'vizu/broadcasters/portal'
 require 'vizu/broadcasters/transaction'
+
+require 'vizu/filters/filter.rb'
+require 'vizu/filters/predicate.rb'
+
 require 'vizu/channels'
 require 'vizu/clients'
 require 'vizu/listener'
 require 'vizu/web_socket_server'
 require 'vizu/vizu'
 
-Vizu.start
+Vizu.start if __FILE__ == $0

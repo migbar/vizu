@@ -15,3 +15,33 @@ Description goes here.
 == Copyright
 
 Copyright (c) 2010 Miguel Barcos. See LICENSE for details.
+
+
+possible DSL:
+
+Matcher.for_all do
+  application.eq "sales"
+  server.like "pwas1"
+  duration.gt 345
+end
+
+Matcher.for_any do
+  rpc.eq "n788xio"
+  server.eq "pwas2"
+end
+......
+
+Filter.any do
+  add_predicate do
+    
+  end
+end
+
+Predicate.server.equals "foobar"
+Filter.application.does_not_equal("sales").and.server.equals("pwas1").and.duration.greater_than(234)
+
+and|or
+eq|neq|like
+gt|lt
+
+

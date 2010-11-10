@@ -21,7 +21,6 @@ class Broadcaster < EM::Connection
   
   def process(line)
     GourceProcessor.process(line)
-    # msg.upcase
   end
 
   def unbind
