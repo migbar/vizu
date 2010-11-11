@@ -30,20 +30,22 @@ class WebSocketServer
       ws.onmessage do |msg|
         # ... receive filters?
         puts "MESSAGE IS #{msg}"
+        puts "REQUEST IS #{ws.request.inspect}"
         if message_is_filter_payload(msg)
           puts "it is filters!!!!!!!!"
           puts "incoming message #{JSON.parse(msg)['filters'].each {|e|puts e.to_hash}}"
           
           @sids = {}
-          # channel, server = parse_path(ws.request['Path'])
-          filter = Filter.new(:server => server, :details => payload)
-          @channels = get_channels()
+          @channels = parse_channels(ws.request['Path'])
+          filters = parse_filters(msg)
+          # Filter.new(:server => server, :details => payload)
           # create a filter based on the incoming payload
           # ask the client to send in their filters
           @channels.each do |channel|
              sid = channel.subscribe do |line| 
-              if (processed = process(line))
-                ws.send(processed) if filter.matches?(line)
+              if (processed = process(line))   
+                match_found = filters.detect { |f| f.matches? processed }
+                ws.send(processed) if match_found
               end
             end
             puts "subscribing channel: #{channel.inspect}, sid: #{sid.inspect}"
@@ -58,16 +60,18 @@ class WebSocketServer
     !!JSON.parse(msg)["filters"]
   end
   
-  def self.parse_path(path)
-    
+  def self.parse_channels(path)
+    [Channels::Accessibility]
   end
   
   def self.process(line)
     HummingProcessor.process line
-  end
+  end    
   
-  def self.get_channels(path)
-    [Channels::Accessibility]
+  def self.parse_filters(msg)  
+    JSON.parse(msg)['filters'].collect do |e| 
+      Filter.new e.to_hash 
+    end
   end
-  
+                         
 end

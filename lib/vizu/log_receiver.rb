@@ -21,7 +21,7 @@ class LogReceiver < EM::Connection
   end
   
   def process(line)      
-    puts "processing ... #{line}"
+    # puts "processing ... #{line}"
     line[3..line.length-1]
   end
   

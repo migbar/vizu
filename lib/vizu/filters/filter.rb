@@ -14,7 +14,7 @@ class Filter
     
   end
   
-  def matches?(line)
+  def matches?(line)     
     return false if predicates.empty?
     self.send(match_method, line)
   end
