@@ -19,7 +19,7 @@ class HummingProcessor
   	  result[:server]  = $3
   	  result[:rpc] = segments[7].strip.split(" ")[1]
   	  result[:duration] = segments[5].strip.to_i 
-  	  result.to_json
+  	  result
   	end
 
 end

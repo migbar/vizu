@@ -29,11 +29,11 @@ class WebSocketServer
       
       ws.onmessage do |msg|
         # ... receive filters?
-        puts "MESSAGE IS #{msg}"
-        puts "REQUEST IS #{ws.request.inspect}"
+        # puts "MESSAGE IS #{msg}"
+        # puts "REQUEST IS #{ws.request.inspect}"
         if message_is_filter_payload(msg)
-          puts "it is filters!!!!!!!!"
-          puts "incoming message #{JSON.parse(msg)['filters'].each {|e|puts e.to_hash}}"
+          # puts "it is filters!!!!!!!!"
+          # puts "incoming message #{JSON.parse(msg)['filters'].each {|e|puts e.to_hash}}"
           
           @sids = {}
           @channels = parse_channels(ws.request['Path'])
@@ -43,9 +43,9 @@ class WebSocketServer
           # ask the client to send in their filters
           @channels.each do |channel|
              sid = channel.subscribe do |line| 
-              if (processed = process(line))   
+              if (processed = process(line))  
                 match_found = filters.detect { |f| f.matches? processed }
-                ws.send(processed) if match_found
+                ws.send(processed.to_json) if match_found
               end
             end
             puts "subscribing channel: #{channel.inspect}, sid: #{sid.inspect}"
@@ -69,8 +69,9 @@ class WebSocketServer
   end    
   
   def self.parse_filters(msg)  
-    JSON.parse(msg)['filters'].collect do |e| 
-      Filter.new e.to_hash 
+    JSON.parse(msg)['filters'].collect do |e|  
+      puts "building filter ... #{e.to_hash.symbolize_keys.inspect}"
+      Filter.new e.to_hash.symbolize_keys 
     end
   end
                          

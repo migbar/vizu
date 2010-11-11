@@ -7,6 +7,8 @@ require 'json'
 
 require 'time'
 
+require 'extensions/keys.rb'
+
 require 'vizu/broadcaster'
 require 'vizu/gource_processor'
 require 'vizu/humming_processor'
