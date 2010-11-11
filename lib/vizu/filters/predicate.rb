@@ -13,10 +13,7 @@ class Predicate
 
   private
     def equals(value, line)    
-      r = target(line).to_s.downcase == value.to_s.downcase
-      puts "matches #{target(line).to_s.downcase} to #{value.to_s.downcase} .. result is #{r}"
-      
-      r
+      target(line).to_s.downcase == value.to_s.downcase
     end
    
     def does_not_equal(value, line)
@@ -36,7 +33,6 @@ class Predicate
     end
   
     def target(line)    
-      puts "line is #{line.inspect } and  the entity to sym is #{self.entity.to_sym}"
       line[self.entity.to_sym]
     end
   
