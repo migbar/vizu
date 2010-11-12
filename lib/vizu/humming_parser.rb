@@ -1,9 +1,9 @@
-class HummingProcessor
+class HummingParser
 
-	def self.process(line)
+	def self.parse(line)
 	  begin
   	  return if line =~ /Servlet.Engine.Transports/
-      process_sales_idms(line)
+      parse_sales_idms(line)
     rescue
       puts "Problem occurred processing line: #{line.inspect}"
     end
@@ -11,7 +11,7 @@ class HummingProcessor
 
   private
   	
-  	def self.process_sales_idms(line)
+  	def self.parse_sales_idms(line)
   	  segments = line.split("\t").to_a 
   	  segments[0].match(/\[(.+)\] \[Thread\-(.+)\] \w* - (\w*)/) 
   	  

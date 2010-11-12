@@ -1,4 +1,5 @@
-class WebSocketServer
+class WebSocketServer       
+  FILTERS_KEY = "filters"
 
   def self.start
     EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8080) do |ws|
@@ -9,15 +10,10 @@ class WebSocketServer
       end
 
       ws.onmessage do |msg|
-        if message_is_filter_payload(msg)          
-          filters = parse_filters(msg)
+        if message_is_filters(msg)          
+          @filters = create_filters(msg)
           @channels.each do |channel|
-             sid = channel.subscribe do |line| 
-              if (processed = process(line))  
-                match_found = filters.detect { |f| f.matches? processed }
-                ws.send(processed.to_json) if match_found
-              end
-            end
+            sid = channel.subscribe { |line| broadcast(ws, line) }
             puts "subscribing channel: #{channel.inspect}, sid: #{sid.inspect}"
             @sids[channel] = sid 
           end
@@ -27,30 +23,42 @@ class WebSocketServer
       ws.onclose do
         puts "VIZU server received a Connection closed from #{@sids.inspect}" 
         @sids.each do |channel, sid|
-          puts "unsubscribing channel: #{channel.inspect}, sid: #{sid.inspect}"
+          puts "\tunsubscribing channel: #{channel.inspect}, sid: #{sid.inspect}"
           channel.unsubscribe sid
         end
       end
             
     end
+  end 
+  
+  def self.broadcast(ws, line)
+    if (log_event = parse(line))  
+      ws.send(log_event.to_json) if relevant? log_event
+    end
+  end                               
+  
+  def self.relevant?(log_event)
+    @filters.detect { |f| f.matches? log_event }
   end
   
-  def self.message_is_filter_payload(msg)
-    !!JSON.parse(msg)["filters"]
+  def self.message_is_filters(msg)
+    !!filters(msg)
   end
   
   def self.parse_channels(path)
-    [Channels::Accessibility]
+    [ Channels::Accessibility ]
   end
   
-  def self.process(line)
-    HummingProcessor.process line
+  def self.parse(line)
+    HummingParser.parse line
   end    
   
-  def self.parse_filters(msg)  
-    JSON.parse(msg)['filters'].collect do |e|  
-      Filter.new e.to_hash.symbolize_keys 
-    end
+  def self.create_filters(msg)  
+    filters(msg).collect { |e| Filter.new e.to_hash.symbolize_keys }
+  end   
+  
+  def self.filters(msg)
+    JSON.parse(msg)[FILTERS_KEY] 
   end
                          
 end

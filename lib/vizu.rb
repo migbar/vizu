@@ -11,7 +11,7 @@ require 'extensions/keys.rb'
 
 require 'vizu/broadcaster'
 require 'vizu/gource_processor'
-require 'vizu/humming_processor'
+require 'vizu/humming_parser'
 require 'vizu/log_receiver'
 require 'vizu/broadcasters/accessibility'
 require 'vizu/broadcasters/portal'
