@@ -4,6 +4,11 @@ require 'vizu'
 require 'rspec'
 require 'rspec/autorun'
 
+require 'eventmachine'
+require 'em-websocket'
+require 'em-http-request'
+
+
 RSpec.configure do |config|
   
 end
